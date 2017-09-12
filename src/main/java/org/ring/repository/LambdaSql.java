@@ -1,4 +1,4 @@
-package org.ring.dao;
+package org.ring.repository;
 
 import org.ring.entity.EntityManager;
 import org.ring.entity.Mapper;

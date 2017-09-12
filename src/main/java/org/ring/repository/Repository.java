@@ -1,22 +1,27 @@
-package org.ring.dao;
+package org.ring.repository;
 
+import net.sf.cglib.proxy.Enhancer;
 import org.ring.dml.Dml;
 import org.ring.dml.query.EntityFactory;
+import org.ring.dml.statement.Statement;
+import org.ring.dml.statement.interceptor.GetterInterceptor;
 import org.ring.dml.transaction.DmlType;
 import org.ring.entity.EntityManager;
 import org.ring.entity.Mapper;
+import org.ring.oql.expression.Expressible;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by quanle on 6/1/2017.
  */
-public class Dao<T> implements IDao<T>
+public class Repository<T> implements IRepository<T>
 {
     private Mapper mapper;
 
-    public Dao(Class<T> entity)
+    public Repository(Class<T> entity)
     {
         mapper = EntityManager.getMapper(entity);
     }
@@ -59,6 +64,18 @@ public class Dao<T> implements IDao<T>
         return EntityFactory.getEntities(mapper);
     }
 
+
+    public Statement<T> newStatement()
+    {
+        return new Statement<>(mapper);
+    }
+
+    public Statement<T> newStatement(Function<T, Expressible> function)
+    {
+        GetterInterceptor interceptor = new GetterInterceptor(mapper);
+        T prototype = (T) Enhancer.create(mapper.getEntity(), interceptor);
+        return new Statement<>(mapper, function.apply(prototype), interceptor);
+    }
   /*  T createInstance(ResultSet rs) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, SQLException
     {
         Constructor<T> constructor = domainClass.getConstructor();     // no such method exception

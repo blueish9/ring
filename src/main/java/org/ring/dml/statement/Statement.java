@@ -194,6 +194,10 @@ public class Statement<T>
         {
             projection += column + ",";
         }
+        if (projection.endsWith(","))
+        {
+            projection = projection.substring(0, projection.length() - 1);
+        }
         return executeQuery(projection);
     }
 

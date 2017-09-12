@@ -1,11 +1,11 @@
-package org.ring.dao;
+package org.ring.repository;
 
 import java.util.List;
 
 /**
  * Created by quanle on 6/10/2017.
  */
-public interface IDao<T>
+public interface IRepository<T>
 {
     Object save(T data);
 
